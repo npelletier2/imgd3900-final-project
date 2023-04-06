@@ -1,12 +1,26 @@
-let cursors;
+controls = (function(){
+    let _keybinds = {
+        up: 'UP',
+        down: 'DOWN',
+        left: 'LEFT',
+        right: 'RIGHT',
+        run: 'SHIFT'
+    }
+    direction = [0,0],
+    run = false
 
-function setupCursors(scene){
-    cursors = scene.input.keyboard.createCursorKeys();
-}
+    function setupControls(scene){
+        for (const inp in _keybinds){
+            _keybinds[inp] = scene.input.keyboard.addKey(_keybinds[inp]);
+        }
+    }
 
-function getDirection(){
-    let dir = [];
-    dir[0] = cursors.left.isDown*-1 + cursors.right.isDown*1;
-    dir[1] = cursors.up.isDown*-1 + cursors.down.isDown*1;
-    return dir;
-}
+    function getControls(){
+        direction[0] = _keybinds.left.isDown*-1 + _keybinds.right.isDown*1;
+        direction[1] = _keybinds.up.isDown*-1 + _keybinds.down.isDown*1;
+        run = _keybinds.run.isDown;
+    }
+
+    return {setupControls, getControls, direction, run}
+}());
+
