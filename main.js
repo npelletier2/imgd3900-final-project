@@ -1,3 +1,7 @@
+import { map } from './src/map.js';
+import { controls } from './src/controls.js';
+import { makePlayer } from './src/player.js';
+
 const config = {
     type: Phaser.AUTO,
     width: 700,
@@ -19,6 +23,8 @@ const config = {
 };
 const game = new Phaser.Game(config);
 
+let objects = {};
+
 function preload(){
     //tileset from https://opengameart.org/content/top-down-dungeon-tileset
     this.load.image('sheet', 'assets/map/sheet.png');
@@ -30,16 +36,13 @@ function preload(){
 }
 
 function create(){
-    createMap(this);
-    camera.setupCamera(this);
+    map.setupMap(this);
     controls.setupControls(this);
-    for(const obj in objects){
-        objects[obj].setup(this);
-    }
+    objects.player = makePlayer(this, map);
 }
 
 function update(time, delta){
-    controls.getControls();
+    controls.updateControls();
     for(const obj in objects){
         objects[obj].update(this);
     }
