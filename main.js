@@ -1,6 +1,7 @@
 import { map } from './src/map.js';
 import { controls } from './src/controls.js';
 import { makePlayer } from './src/player.js';
+import { objects } from './src/objects.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -17,13 +18,14 @@ const config = {
     physics: {
         default: 'arcade',
         arcade: {
+            debug: false,
             gravity: {y:0}
         }
     }
 };
 const game = new Phaser.Game(config);
 
-let objects = {};
+let drawDebug = false;
 
 function preload(){
     //tileset from https://opengameart.org/content/top-down-dungeon-tileset
@@ -36,7 +38,8 @@ function preload(){
 }
 
 function create(){
-    map.setupMap(this);
+    map.setupMap(this, drawDebug);
+    map.addObjects(this);
     controls.setupControls(this);
     objects.player = makePlayer(this, map);
 }
@@ -44,6 +47,8 @@ function create(){
 function update(time, delta){
     controls.updateControls();
     for(const obj in objects){
-        objects[obj].update(this);
+        if(objects[obj].update){
+            objects[obj].update();
+        }
     }
 }

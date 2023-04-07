@@ -3,15 +3,11 @@ import { map } from './map.js';
 
 export {makePlayer}
 
-let _sprite;
-let _speed;
-let _baseSpeed;
-
 function makePlayer(scene){
     //setup
-    _sprite = scene.physics.add.sprite(200, 200, 'slime');
-    _speed = 100;
-    _baseSpeed = 100;
+    let _sprite = scene.physics.add.sprite(200, 200, 'slime');
+    let _speed = 100;
+    let _baseSpeed = 100;
     scene.physics.add.collider(_sprite, map.collidable);
     scene.anims.create({
         key: 'down',
@@ -42,8 +38,9 @@ function makePlayer(scene){
         frames: [{key:'slime', frame:0}],
         frameRate: 10
     });
+    _sprite.body.setSize(8, 4).setOffset(4, 9);
     const camera = scene.cameras.main;
-    camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    camera.setBounds(0, 0, map.tilemap.widthInPixels, map.tilemap.heightInPixels);
     camera.startFollow(_sprite);
 
     function update(){
@@ -66,7 +63,7 @@ function makePlayer(scene){
         if(controls.run) _speed = _baseSpeed*2;
         else _speed = _baseSpeed;
 
-        _sprite.body.velocity.normalize().scale(_speed);   
+        _sprite.body.velocity.normalize().scale(_speed);
     }
     
     return {update};
