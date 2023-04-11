@@ -6,3 +6,7 @@ p{
     color: white;
     font-size: 15px;
 }
+.controls{
+    text-align: center;
+    margin: 2px;
+}
