@@ -2,7 +2,8 @@ export let controls = {
     direction: [0,0],
     run: false,
     setupControls,
-    updateControls
+    updateControls,
+    onSelect
 };
 
 let _keybinds = {
@@ -10,7 +11,8 @@ let _keybinds = {
     down: 'DOWN',
     left: 'LEFT',
     right: 'RIGHT',
-    run: 'SHIFT'
+    run: 'SHIFT',
+    select: 'ENTER'
 };
 
 function updateControls(){
@@ -25,3 +27,6 @@ function setupControls(scene){
     }
 };
 
+function onSelect(callback){
+    _keybinds.select.on('up', callback);
+}

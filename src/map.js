@@ -1,9 +1,12 @@
 import { makeBarrel } from "./barrel_enemy.js";
 import { objects } from "./objects.js";
+import { startBattle } from "./battle.js";
 
 export let map = {
     setupMap,
-    addObjects
+    addObjects,
+    swapToBattle,
+    endBattle
 };
 
 function setupMap(scene, drawDebug){
@@ -12,7 +15,6 @@ function setupMap(scene, drawDebug){
     map.ground = tilemap.createLayer('ground', tiles, 0, 0);
     map.collidable = tilemap.createLayer('collidable', tiles, 0, 0);
     map.above = tilemap.createLayer('above', tiles, 0, 0);
-    map.enemy = tilemap.createLayer('enemy', tiles, 0, 0);
     
     map.collidable.setCollisionByProperty({collides: true});
     map.above.setDepth(10);
@@ -32,7 +34,18 @@ function setupMap(scene, drawDebug){
 
 function addObjects(scene){
     let barrelEnemySprite = map.tilemap.createFromObjects('enemy', {
-        name: 'barrel_enemy'
+        id: 3,
+        key: 'barrel'
     })[0];
     objects.barrelEnemy = makeBarrel(scene, barrelEnemySprite)
+}
+
+function swapToBattle(scene, enemies, triggeringSprite){
+    startBattle(scene, enemies, triggeringSprite);
+}
+
+function endBattle(scene, triggeringSprite){
+    scene.scene.stop();
+    scene.scene.resume('mainScene');
+    triggeringSprite.destroy();
 }
