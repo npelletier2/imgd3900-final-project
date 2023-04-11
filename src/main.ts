@@ -1,3 +1,5 @@
+import { BattleScene } from "./scene/BattleScene";
+import { MainScene } from "./scene/MainScene";
 import "./style.css";
 import "phaser";
 
@@ -39,17 +41,20 @@ export class GameScene extends Phaser.Scene {
   }
 }
 
+
+let widthTiles = 44;
+let heightTiles = 25;
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: widthTiles*16,
+  height: heightTiles*16,
   physics: {
     default: "arcade",
     arcade: {
       gravity: { y: 200 },
     },
   },
-  scene: new GameScene(),
+  scene: [MainScene, BattleScene]
 };
 
 new Phaser.Game(config);
