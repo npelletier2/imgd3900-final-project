@@ -1,11 +1,10 @@
 import "phaser"
-import { objects } from "../globals";
+import { BaseScene, objects } from "../../globals";
+import { mainObjects } from "./MainObjects";
 
-export class MainScene extends Phaser.Scene{
+export class MainScene extends BaseScene{
     constructor() {
-        super({
-            key: 'MainScene'
-        })
+        super('MainScene')
     }
 
     preload(): void {
@@ -21,6 +20,11 @@ export class MainScene extends Phaser.Scene{
                 objects[prop].preload();
             }
         }
+        for(let prop in mainObjects){
+            if(mainObjects[prop].preload){
+                mainObjects[prop].preload();
+            }
+        }
     }
 
     create(): void {
@@ -29,12 +33,22 @@ export class MainScene extends Phaser.Scene{
                 objects[prop].create();
             }
         }
+        for(let prop in mainObjects){
+            if(mainObjects[prop].create){
+                mainObjects[prop].create();
+            }
+        }
     }
 
     update(): void {
         for(let prop in objects){
             if(objects[prop].update){
                 objects[prop].update();
+            }
+        }
+        for(let prop in mainObjects){
+            if(mainObjects[prop].update){
+                mainObjects[prop].update();
             }
         }
     }

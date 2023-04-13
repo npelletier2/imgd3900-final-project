@@ -1,10 +1,9 @@
 import "phaser"
+import { BaseScene } from "../../globals"
 
-export class BattleScene extends Phaser.Scene{
+export class BattleScene extends BaseScene{
     constructor(){
-        super({
-            key: 'BattleScene'
-        })
+        super('BaseScene')
     }
 
     preload(): void {

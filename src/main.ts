@@ -1,5 +1,4 @@
-import { BattleScene } from "./scene/BattleScene";
-import { MainScene } from "./scene/MainScene";
+import { scenes } from "./globals";
 import "./style.css";
 import "phaser";
 
@@ -54,7 +53,7 @@ const config: Phaser.Types.Core.GameConfig = {
       gravity: { y: 200 },
     },
   },
-  scene: [MainScene, BattleScene]
+  scene: scenes.all
 };
 
 new Phaser.Game(config);
