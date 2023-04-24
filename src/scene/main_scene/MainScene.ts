@@ -1,6 +1,6 @@
 import "phaser"
 import { BaseScene } from "../BaseScene";
-import { controls, objects, scenes } from "../../globals";
+import { scenes } from "../../globals";
 import { mainObjects } from "./mainObjects";
 import { mainMap } from "./mainMap";
 

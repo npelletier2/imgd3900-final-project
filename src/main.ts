@@ -8,12 +8,6 @@ import "phaser";
 //setup scenes object
 scenes.all =  [MainScene, BattleScene];
 scenes.keys = ['MainScene', 'BattleScene'];
-scenes.switchTo = function(sceneName:string):void{
-  this.currentScene.scene.launch(sceneName);
-}
-scenes.setup = function(scene:BaseScene):void {
-  this.currentScene = scene;
-}
 
 //setup BaseScene
 BaseScene.prototype.preload = function(){
@@ -44,7 +38,7 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 200 },
+      gravity: { y: 0 },
     },
   },
   scene: scenes.all
