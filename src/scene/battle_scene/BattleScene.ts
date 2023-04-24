@@ -7,14 +7,14 @@ export class BattleScene extends BaseScene{
     }
 
     preload(): void {
-
+        super.preload();
     }
 
     create(): void {
-
+        super.create();
     }
 
     update(): void {
-
+        super.update();
     }
 }

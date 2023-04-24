@@ -11,34 +11,26 @@ export class MainScene extends BaseScene{
     }
 
     preload(): void {
+        super.preload();
         this.load.setBaseURL('../../assets');
         mainMap.preload();
         this.load.image('barrel', 'sprites/barrel.png');
-        for(let prop in objects){
-            objects[prop].preload?.();
-        }
         for(let prop in mainObjects){
             mainObjects[prop].preload?.();
         }
     }
 
     create(): void {
-        controls.setupControls(this);
+        super.create();
         mainMap.create();
-        for(let prop in objects){
-            objects[prop].create?.();
-        }
         for(let prop in mainObjects){
             mainObjects[prop].create?.();
         }
     }
 
     update(): void {
-        controls.updateControls();
+        super.update();
         mainMap.update();
-        for(let prop in objects){
-            objects[prop].update?.();
-        }
         for(let prop in mainObjects){
             mainObjects[prop].update?.();
         }

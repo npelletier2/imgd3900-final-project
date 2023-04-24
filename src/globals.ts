@@ -1,5 +1,3 @@
-import { MainScene } from "./scene/main_scene/MainScene";
-import { BattleScene } from "./scene/battle_scene/BattleScene";
 import { BaseScene } from "./scene/BaseScene";
 
 export interface Object {
@@ -20,17 +18,18 @@ export let scenes:{
     currentScene: BaseScene,
     switchTo:(sceneName:string)=>void,
     setup:(scene:BaseScene)=>void
-} = {
-    all: [MainScene, BattleScene],
-    keys: ['MainScene', 'BattleScene'],
-    currentScene: new BaseScene('undefined'),
-    switchTo: function(sceneName):void{
-        this.currentScene.scene.launch(sceneName);
-    },
-    setup: function(scene):void {
-        this.currentScene = scene;
-    }
 }
+// = {
+//    all: [MainScene, BattleScene],
+//    keys: ['MainScene', 'BattleScene'],
+//    currentScene: new BaseScene('undefined'),
+//    switchTo: function(sceneName):void{
+//        this.currentScene.scene.launch(sceneName);
+//    },
+//    setup: function(scene):void {
+//        this.currentScene = scene;
+//    }
+//}
 
 // ---------- Controls ----------
 

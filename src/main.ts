@@ -1,45 +1,39 @@
-import { scenes } from "./globals";
+import { controls, objects, scenes } from "./globals";
+import { MainScene } from "./scene/main_scene/MainScene";
+import { BattleScene } from "./scene/battle_scene/BattleScene";
+import { BaseScene } from "./scene/BaseScene";
 import "./style.css";
 import "phaser";
 
-// adapted from: https://phaser.io/tutorials/getting-started-phaser3/part5
-
-export class GameScene extends Phaser.Scene {
-  constructor() {
-    super({
-      key: "GameScene",
-    });
-  }
-
-  preload(): void {
-    this.load.setBaseURL("http://labs.phaser.io");
-
-    this.load.image("sky", "assets/skies/space3.png");
-    this.load.image("logo", "assets/sprites/phaser3-logo.png");
-    this.load.image("red", "assets/particles/red.png");
-  }
-
-  create(): void {
-    this.add.image(400, 300, "sky");
-
-    const particles = this.add.particles("red");
-
-    const emitter = particles.createEmitter({
-      speed: 100,
-      scale: { start: 1, end: 0 },
-      blendMode: "ADD",
-    });
-
-    const logo = this.physics.add.image(400, 100, "logo");
-
-    logo.setVelocity(100, 200);
-    logo.setBounce(1, 1);
-    logo.setCollideWorldBounds(true);
-
-    emitter.startFollow(logo);
-  }
+//setup scenes object
+scenes.all =  [MainScene, BattleScene];
+scenes.keys = ['MainScene', 'BattleScene'];
+scenes.switchTo = function(sceneName:string):void{
+  this.currentScene.scene.launch(sceneName);
+}
+scenes.setup = function(scene:BaseScene):void {
+  this.currentScene = scene;
 }
 
+//setup BaseScene
+BaseScene.prototype.preload = function(){
+  scenes.setup(this);
+  for(let prop in objects){
+    objects[prop].preload?.();
+  }
+}
+BaseScene.prototype.create = function(){
+  controls.setupControls(this);
+  for(let prop in objects){
+    objects[prop].create?.();
+  }
+}
+BaseScene.prototype.update = function(){
+  controls.updateControls();
+  for(let prop in objects){
+    objects[prop].update?.();
+  }
+}
 
 let widthTiles = 44;
 let heightTiles = 25;
