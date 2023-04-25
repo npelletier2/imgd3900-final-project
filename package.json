@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && cp -r assets/* dist", 
-    "publish": "npm run build && git add dist -f && git commit -m 'dist' && git subtree push --prefix dist origin gh-pages", 
+    "publish": "git add dist -f && git commit -m 'dist' && git subtree push --prefix dist origin gh-pages", 
     "preview": "vite preview"
   },
   "devDependencies": {
