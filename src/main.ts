@@ -2,6 +2,7 @@ import { controls, objects, scenes } from "./globals";
 import { MainScene } from "./scene/main_scene/MainScene";
 import { BattleScene } from "./scene/battle_scene/BattleScene";
 import { BaseScene } from "./scene/BaseScene";
+import { setupPlayer } from "./scene/main_scene/player";
 import "./style.css";
 import "phaser";
 
@@ -29,12 +30,16 @@ BaseScene.prototype.update = function(){
   }
 }
 
+//setup player
+setupPlayer();
+
 let widthTiles = 44;
 let heightTiles = 25;
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: widthTiles*16,
   height: heightTiles*16,
+  zoom: 2,
   physics: {
     default: "arcade",
     arcade: {
