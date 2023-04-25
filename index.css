@@ -1,0 +1,9 @@
+body{
+    background-color: black;
+}
+p{
+    margin: 2px;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+}
