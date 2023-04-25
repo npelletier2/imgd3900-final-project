@@ -109,7 +109,6 @@ let player = (function(){
         let currSpeed = _speed;
         if(dashing){
             dir = dashHandler.getDashDir();
-            console.log(dir);
             currSpeed = dashHandler.dashSpeed;
         }
 
