@@ -6,8 +6,8 @@ export {setupPlayer}
 
 let dashHandler = (function(){
     let dashSpeed = 500;
-    let dashFrames = 5;
-    let dashCooldown = 20;
+    let dashFrames = 8;
+    let dashCooldown = 23;
 
     let dashTimer = 0;
     let dashCooldownTimer = 0;
@@ -17,6 +17,12 @@ let dashHandler = (function(){
         if(dashCooldownTimer != 0){
             return false;
         }
+        
+        //pause scene briefly for more dash impact
+        scenes.currentScene?.physics.world.pause();
+        setTimeout(()=>{
+            scenes.currentScene?.physics.world.resume();
+        }, 50)
         
         dashTimer = dashFrames;
         dashCooldownTimer = dashCooldown;
@@ -28,8 +34,18 @@ let dashHandler = (function(){
     function updateDash():boolean{
         if(dashCooldownTimer != 0){
             dashCooldownTimer--;
+            if(mainObjects.player.sprite){
+                mainObjects.player.sprite.tint = 0xff33ff;
+            }
+        }else{
+            if(mainObjects.player.sprite){
+                mainObjects.player.sprite.tint = 0xffffff;
+            }
         }
         if(dashTimer != 0){
+            if(mainObjects.player.sprite){
+                mainObjects.player.sprite.tint = 0xff00ff;
+            }
             dashTimer--;
             return true;
         }else{
@@ -42,6 +58,10 @@ let dashHandler = (function(){
     }
 
     return {tryDash, updateDash, getDashDir, dashSpeed}
+})();
+
+let attackHandler = (function(){
+
 })();
 
 let player = (function(){
