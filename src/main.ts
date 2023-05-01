@@ -1,14 +1,13 @@
 import { controls, objects, scenes } from "./globals";
 import { MainScene } from "./scene/main_scene/MainScene";
-import { BattleScene } from "./scene/battle_scene/BattleScene";
 import { BaseScene } from "./scene/BaseScene";
 import { setupPlayer } from "./scene/main_scene/player";
 import "./style.css";
 import "phaser";
 
 //setup scenes object
-scenes.all =  [MainScene, BattleScene];
-scenes.keys = ['MainScene', 'BattleScene'];
+scenes.all =  [MainScene];
+scenes.keys = ['MainScene'];
 
 //setup BaseScene
 BaseScene.prototype.preload = function(){
@@ -44,6 +43,7 @@ const config: Phaser.Types.Core.GameConfig = {
   physics: {
     default: "arcade",
     arcade: {
+      debug: true,
       gravity: { y: 0 },
     },
   },

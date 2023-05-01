@@ -65,11 +65,12 @@ let attackHandler = (function(){
     let attackTimer = 0;
 
     function playAnim(sprite:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, animName:string, rot:integer):void{
-        console.log(rot);
+        sprite.body.enable = true;
         sprite.setRotation(rot);
         sprite.setVisible(true);
         sprite.anims.play(animName).once('animationcomplete', ()=>{
             sprite.setVisible(false);
+            sprite.body.enable = false;
         })
     }
 
@@ -106,36 +107,34 @@ let player = (function(){
     const _speed = 100;
     let atkDiagSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     let atkCardSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-
+    let sprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
     const preload = function(): void {
         scenes.currentScene?.load.spritesheet('slime', 'sprites/slime.png',{
             frameWidth: 16, frameHeight: 16
         });
-        scenes.currentScene?.load.spritesheet('attack-diag', 'sprites/attack-diag.png', {
-            frameWidth: 16, frameHeight: 16
+        scenes.currentScene?.load.spritesheet('attack-diag', 'sprites/swing-diag.png', {
+            frameWidth: 48, frameHeight: 48
         });
-        scenes.currentScene?.load.spritesheet('attack-card', 'sprites/attack-card.png', {
-            frameWidth: 16, frameHeight: 16
+        scenes.currentScene?.load.spritesheet('attack-card', 'sprites/swing-vert.png', {
+            frameWidth: 48, frameHeight: 48
         });
     };
     let create = function(): void {
         //make sprite
-        mainObjects.player.sprite = (scenes.currentScene?.physics.add.sprite(200, 200, 'slime') as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody);
+        sprite = (scenes.currentScene?.physics.add.sprite(200, 200, 'slime') as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody);
         atkDiagSprite = (scenes.currentScene?.physics.add.sprite(200, 200, 'atk-diag') as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody);
         atkCardSprite = (scenes.currentScene?.physics.add.sprite(200, 200, 'atk-card') as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody);
 
         //set player sprite size
-        (mainObjects.player.sprite.body as Phaser.Physics.Arcade.Body).setSize(8,4).setOffset(4,9);
+        sprite.body.setSize(8,4).setOffset(4,6);
 
         //collide with collidable layer of map
-        scenes.currentScene?.physics.add.collider((mainObjects.player.sprite as Phaser.GameObjects.GameObject), mainMap.layers.collidable);
+        scenes.currentScene?.physics.add.collider((sprite as Phaser.GameObjects.GameObject), mainMap.layers.collidable);
 
         //setup attack sprites
         atkDiagSprite.setVisible(false);
         atkCardSprite.setVisible(false);
-        atkCardSprite.setOrigin(0.5, 1);
-        atkDiagSprite.setOrigin(1, 0.875);
 
         //set up anims
         scenes.currentScene?.anims.create({
@@ -183,7 +182,7 @@ let player = (function(){
         //camera follows player
         const camera = (scenes.currentScene?.cameras.main as Phaser.Cameras.Scene2D.Camera);
         camera.setBounds(0, 0, (mainMap.tilemap?.widthInPixels as number), (mainMap.tilemap?.heightInPixels as number));
-        camera.startFollow((mainObjects.player.sprite as Phaser.GameObjects.GameObject));
+        camera.startFollow((sprite as Phaser.GameObjects.GameObject));
 
         //set dash callback
         controls.setDashCallback(dashHandler.tryDash);
@@ -191,6 +190,10 @@ let player = (function(){
 
         atkDiagSprite.anims.play('atk-diag');
         atkCardSprite.anims.play('atk-card');
+        (atkCardSprite.body as Phaser.Physics.Arcade.Body).setSize(38,18).setOffset(5,1);
+        (atkDiagSprite.body as Phaser.Physics.Arcade.Body).setSize(25,24).setOffset(0,1);
+        atkDiagSprite.body.enable = false;
+        atkCardSprite.body.enable = false;
     };
 
     let update = function(): void {
@@ -217,24 +220,24 @@ let player = (function(){
         }
 
         //set velocity
-        (mainObjects.player.sprite?.body as Phaser.Physics.Arcade.Body).setVelocity(dir[0], dir[1]);
-        (mainObjects.player.sprite?.body as Phaser.Physics.Arcade.Body).velocity.normalize().scale(currSpeed);
+        sprite.body.setVelocity(dir[0], dir[1]);
+        sprite.body.velocity.normalize().scale(currSpeed);
 
         //play correct animation
         if(dir[0]===0 && dir[1]===0){
-            mainObjects.player.sprite?.anims.play('stop');
+            sprite.anims.play('stop');
         }else if(dir[0] > 0){
-            mainObjects.player.sprite?.anims.play('right', true);
+            sprite.anims.play('right', true);
         }else if(dir[0] < 0){
-            mainObjects.player.sprite?.anims.play('left', true);
+            sprite.anims.play('left', true);
         }else if(dir[1] > 0){
-            mainObjects.player.sprite?.anims.play('down', true);
+            sprite.anims.play('down', true);
         }else{
-            mainObjects.player.sprite?.anims.play('up', true);
+            sprite.anims.play('up', true);
         }
 
         //set atk sprite positions
-        let center = (mainObjects.player.sprite?.getCenter() as Phaser.Math.Vector2);
+        let center = (sprite.getCenter() as Phaser.Math.Vector2);
         atkDiagSprite.setPosition(center.x, center.y);
         atkCardSprite.setPosition(center.x, center.y);
     };
