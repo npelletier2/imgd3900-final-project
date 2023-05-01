@@ -64,7 +64,7 @@ let attackHandler = (function(){
     let attackCooldown = 5;
     let attackTimer = 0;
 
-    function playAnim(sprite:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, animName:string, rot:integer):void{
+    function playAnim(sprite:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, animName:string, rot:number):void{
         sprite.body.enable = true;
         sprite.setRotation(rot);
         sprite.setVisible(true);
@@ -74,19 +74,76 @@ let attackHandler = (function(){
         })
     }
 
+    function setCardBox(
+        atkCardSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, 
+        angle: number)
+        {
+        let boxnum = 0;
+        boxnum += +!(angle % (2*Math.PI)); //test for up
+        boxnum += 2*(+!((angle - (Math.PI/2)) % (2*Math.PI))) //test for right
+        boxnum += 4*(+!((angle - (Math.PI)) % (2*Math.PI))) //test for down
+        boxnum += 8*(+!((angle - (3*Math.PI/2)) % (2*Math.PI))) //test for left
+        switch(boxnum){
+            case 1:
+                atkCardSprite.body.setSize(38,18).setOffset(5,1);
+                break;
+            case 2:
+                atkCardSprite.body.setSize(18,38).setOffset(29,5);
+                break;
+            case 4:
+                atkCardSprite.body.setSize(38,18).setOffset(5,29);
+                break;
+            case 8:
+                atkCardSprite.body.setSize(18,38).setOffset(1,5);
+                break;
+            default:
+                console.log(boxnum)
+        }
+    }
+
+    function setDiagBox(
+        atkDiagSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, 
+        angle: number)
+        {
+        let boxnum = 0;
+        boxnum += +!(angle % (2*Math.PI)); //test for up
+        boxnum += 2*(+!((angle - (Math.PI/2)) % (2*Math.PI))) //test for right
+        boxnum += 4*(+!((angle - (Math.PI)) % (2*Math.PI))) //test for down
+        boxnum += 8*(+!((angle - (3*Math.PI/2)) % (2*Math.PI))) //test for left
+        switch(boxnum){
+            case 1:
+                atkDiagSprite.body.setSize(25,24).setOffset(0,1);
+                break;
+            case 2:
+                atkDiagSprite.body.setSize(24,25).setOffset(23,0);
+                break;
+            case 4:
+                atkDiagSprite.body.setSize(25,24).setOffset(23,23);
+                break;
+            case 8:
+                atkDiagSprite.body.setSize(24,25).setOffset(1,23);
+                break;
+            default:
+                console.log(boxnum)
+        }
+    }
+
     function tryAttack(
         atkDiagSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, 
-        atkCardSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) : boolean{
+        atkCardSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody) : boolean
+        {
         if(attackTimer != 0){
             return false;
         }
         attackTimer = attackCooldown;
-
+ 
         let dir = new Phaser.Math.Vector2(...controls.direction);
         let angle = dir.angle() + Math.PI/2;
         if(angle%(Math.PI/2) === 0){
+            setCardBox(atkCardSprite, angle);
             playAnim(atkCardSprite, 'atk-card', angle);
         }else{
+            setDiagBox(atkDiagSprite, angle+Math.PI/4);
             playAnim(atkDiagSprite, 'atk-diag', angle+Math.PI/4);
         }
 
@@ -107,7 +164,7 @@ let player = (function(){
     const _speed = 100;
     let atkDiagSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     let atkCardSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-    let sprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    let sprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody = null as unknown as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
     const preload = function(): void {
         scenes.currentScene?.load.spritesheet('slime', 'sprites/slime.png',{
@@ -190,8 +247,6 @@ let player = (function(){
 
         atkDiagSprite.anims.play('atk-diag');
         atkCardSprite.anims.play('atk-card');
-        (atkCardSprite.body as Phaser.Physics.Arcade.Body).setSize(38,18).setOffset(5,1);
-        (atkDiagSprite.body as Phaser.Physics.Arcade.Body).setSize(25,24).setOffset(0,1);
         atkDiagSprite.body.enable = false;
         atkCardSprite.body.enable = false;
     };
@@ -242,7 +297,7 @@ let player = (function(){
         atkCardSprite.setPosition(center.x, center.y);
     };
 
-    return {preload, create, update};
+    return {sprite, preload, create, update};
 })();
 
 function setupPlayer(){

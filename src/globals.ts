@@ -1,7 +1,7 @@
 import { BaseScene } from "./scene/BaseScene";
 
 export interface Object {
-    sprite?: Phaser.Physics.Matter.Sprite,
+    sprite?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
     preload?:(()=>void),
     create?:(()=>void),
     update?:(()=>void),
