@@ -276,7 +276,7 @@ let player = (function(){
         atkCardSprite.body.enable = false;
 
         //bullet hit callback
-        bullets.addOverlap(sprite, (bullet, other)=>{
+        bullets.addOverlap(sprite, (bullet)=>{
             let dmg = bullet.getData('damage');
             bullet.destroy();
             player.damage(dmg)
