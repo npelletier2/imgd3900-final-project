@@ -163,16 +163,16 @@ let attackHandler = (function(){
             attackTimer--;
             switch(attackTimer){
                 case 4:
-                    atkSpeed = 500;
+                    atkSpeed = 400;
                     break;
                 case 3:
-                    atkSpeed += 400;
-                    break;
-                case 2:
                     atkSpeed += 300;
                     break;
+                case 2:
+                    atkSpeed += 200;
+                    break;
                 case 1:
-                    atkSpeed += 150;
+                    atkSpeed += 100;
                     break;
             }
         }

@@ -4,10 +4,11 @@ export let bullets: {
     group?: Phaser.GameObjects.Group,
     create: ()=>void,
     addOverlap: (other:Phaser.GameObjects.GameObject, callback:ArcadePhysicsCallback)=>void,
-    makeBullet: (pos:{x:number, y:number}, vel:{x:number, y:number}, damage?:number)=>Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
+    makeBulletXY: (pos:{x:number, y:number}, vel:{x:number, y:number}, damage?:number)=>Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
+    makeBulletRTheta: (pos:{x:number, y:number}, angle:number, speed:number, damage?:number)=>Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
     preload: ()=>void;
 } = {
-    create, addOverlap, makeBullet, preload
+    create, addOverlap, makeBulletXY, makeBulletRTheta, preload
 }
 
 function create():void{
@@ -19,13 +20,19 @@ function addOverlap(other:Phaser.GameObjects.GameObject, callback:ArcadePhysicsC
     scenes.currentScene?.physics.add.collider(bullets.group as Phaser.GameObjects.Group, other, callback);
 }
 
-function makeBullet(pos:{x:number, y:number}, vel:{x:number, y:number}, damage:number=10){
+function makeBulletXY(pos:{x:number, y:number}, vel:{x:number, y:number}, damage:number=10) : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
     let sprite = scenes.currentScene?.physics.add.sprite(pos.x, pos.y, 'bullet') as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     sprite.body.setSize(4,4).setOffset(2,2);
     sprite.body.setVelocity(vel.x, vel.y);
     sprite.setData('damage', damage);
     bullets.group?.add(sprite);
     return sprite;
+}
+
+function makeBulletRTheta(pos:{x:number, y:number}, angle:number, speed:number, damage:number=10) : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody{
+    let vel = new Phaser.Math.Vector2(1,0);
+    vel.rotate(angle).scale(speed);
+    return makeBulletXY(pos, {x:vel.x, y:vel.y}, damage);
 }
 
 function preload(){

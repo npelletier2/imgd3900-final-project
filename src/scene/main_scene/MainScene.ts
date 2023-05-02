@@ -3,7 +3,7 @@ import { BaseScene } from "../BaseScene";
 import { scenes } from "../../globals";
 import { mainObjects } from "./mainObjects";
 import { mainMap } from "./mainMap";
-import { StationaryEnemy } from "./enemy1"
+import { StationaryEnemy } from "./enemy"
 import { bullets } from "./bullet";
 
 export class MainScene extends BaseScene{
@@ -39,7 +39,7 @@ export class MainScene extends BaseScene{
         this.bulletTimer--;
         if(this.bulletTimer === 0){
             this.bulletTimer = 60;
-            bullets.makeBullet({x:300, y:200}, {x:0, y:50});
+            bullets.makeBulletXY({x:300, y:200}, {x:0, y:50});
         }
     }
 }
