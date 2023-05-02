@@ -1,11 +1,12 @@
 import { mainObjects } from "./mainObjects"
-import { controls, scenes } from "../../globals"
+import { ObjectGame, controls, scenes } from "../../globals"
+import { bullets } from "./bullet"
 import { mainMap } from "./mainMap"
 
 export {setupPlayer}
 
 let dashHandler = (function(){
-    let dashSpeed = 500;
+    let dashSpeed = 700;
     let dashFrames = 8;
     let dashCooldown = 23;
 
@@ -32,19 +33,20 @@ let dashHandler = (function(){
     }
 
     function updateDash():boolean{
+        let sprite = (mainObjects.player as ObjectGame).sprite
         if(dashCooldownTimer != 0){
             dashCooldownTimer--;
-            if(mainObjects.player.sprite){
-                mainObjects.player.sprite.tint = 0xff33ff;
+            if(sprite){
+                sprite.tint = 0xff33ff;
             }
         }else{
-            if(mainObjects.player.sprite){
-                mainObjects.player.sprite.tint = 0xffffff;
+            if(sprite){
+                sprite.tint = 0xffffff;
             }
         }
         if(dashTimer != 0){
-            if(mainObjects.player.sprite){
-                mainObjects.player.sprite.tint = 0xff00ff;
+            if(sprite){
+                sprite.tint = 0xff00ff;
             }
             dashTimer--;
             return true;
@@ -63,6 +65,7 @@ let dashHandler = (function(){
 let attackHandler = (function(){
     let attackCooldown = 5;
     let attackTimer = 0;
+    let attackDir = new Phaser.Math.Vector2(0,0);
 
     function playAnim(sprite:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody, animName:string, rot:number):void{
         sprite.body.enable = true;
@@ -136,9 +139,8 @@ let attackHandler = (function(){
             return false;
         }
         attackTimer = attackCooldown;
- 
-        let dir = new Phaser.Math.Vector2(...controls.direction);
-        let angle = dir.angle() + Math.PI/2;
+
+        let angle = attackDir.angle() + Math.PI/2;
         if(angle%(Math.PI/2) === 0){
             setCardBox(atkCardSprite, angle);
             playAnim(atkCardSprite, 'atk-card', angle);
@@ -151,20 +153,43 @@ let attackHandler = (function(){
     }
     
     function updateAttack(){
+        let dir = new Phaser.Math.Vector2(...controls.direction);
+        if(!(dir.x===0 && dir.y===0)){
+            attackDir.x = dir.x;
+            attackDir.y = dir.y;
+        }
+        let atkSpeed = 0;
         if(attackTimer != 0){
             attackTimer--;
+            switch(attackTimer){
+                case 4:
+                    atkSpeed = 500;
+                    break;
+                case 3:
+                    atkSpeed += 400;
+                    break;
+                case 2:
+                    atkSpeed += 300;
+                    break;
+                case 1:
+                    atkSpeed += 150;
+                    break;
+            }
         }
-        return attackTimer;
+        let atkVector = attackDir.clone();
+        atkVector.normalize().scale(atkSpeed);
+        return atkVector;
     }
 
     return {tryAttack, updateAttack};
 })();
 
 let player = (function(){
-    const _speed = 100;
+    const _speed = 150;
     let atkDiagSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     let atkCardSprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     let sprite : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody = null as unknown as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    let health = 100;
 
     const preload = function(): void {
         scenes.currentScene?.load.spritesheet('slime', 'sprites/slime.png',{
@@ -249,12 +274,19 @@ let player = (function(){
         atkCardSprite.anims.play('atk-card');
         atkDiagSprite.body.enable = false;
         atkCardSprite.body.enable = false;
+
+        //bullet hit callback
+        bullets.addOverlap(sprite, (bullet, other)=>{
+            let dmg = bullet.getData('damage');
+            bullet.destroy();
+            player.damage(dmg)
+        })
     };
 
     let update = function(): void {
         let dashing = dashHandler.updateDash();
-        let attackFrame = attackHandler.updateAttack();
-
+        let atkVector = attackHandler.updateAttack();
+        
         //get dir and speed, checking dash and attack status
         let dir = controls.direction;
         let currSpeed = _speed;
@@ -262,21 +294,13 @@ let player = (function(){
             dir = dashHandler.getDashDir();
             currSpeed = dashHandler.dashSpeed;
         }
-        switch(attackFrame){
-            case 5:
-                currSpeed += 400;
-                break;
-            case 4:
-                currSpeed += 300;
-                break;
-            case 3:
-                currSpeed += 100;
-                break;
-        }
+
+        let vel = new Phaser.Math.Vector2(...dir);
+        vel.normalize().scale(currSpeed);
+        vel.add(atkVector);
 
         //set velocity
-        sprite.body.setVelocity(dir[0], dir[1]);
-        sprite.body.velocity.normalize().scale(currSpeed);
+        sprite.body.setVelocity(vel.x, vel.y);
 
         //play correct animation
         if(dir[0]===0 && dir[1]===0){
@@ -297,7 +321,12 @@ let player = (function(){
         atkCardSprite.setPosition(center.x, center.y);
     };
 
-    return {sprite, preload, create, update};
+    let damage = function(dmg: number){
+        health -= dmg;
+        console.log(health)
+    }
+
+    return {sprite, preload, create, update, damage};
 })();
 
 function setupPlayer(){

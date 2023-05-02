@@ -1,14 +1,16 @@
 import { BaseScene } from "./scene/BaseScene";
 
-export interface Object {
-    sprite?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
-    preload?:(()=>void),
-    create?:(()=>void),
-    update?:(()=>void),
-    [index: string]: any //fields for use by the object internally
+export interface ObjectGame {
+    sprite?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    preload?:(()=>void);
+    create?:(()=>void);
+    update?:(()=>void);
+    [index: string]: any; //fields for use by the object internally
 }
 
-export let objects:{[index:string]:Object} = {};
+export let objectTypes: Class[] = [];
+
+export let objects:{[index:string]:ObjectGame} = {};
 
 // ---------- Scene Switching ----------
 
@@ -107,3 +109,6 @@ function setAttackCallback(callback:()=>boolean): void{
 function setDashCallback(callback:()=>boolean): void{
     _dashCallback = callback;
 }
+
+// ---------- Bullet Group ----------
+

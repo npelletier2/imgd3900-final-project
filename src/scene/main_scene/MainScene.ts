@@ -3,6 +3,8 @@ import { BaseScene } from "../BaseScene";
 import { scenes } from "../../globals";
 import { mainObjects } from "./mainObjects";
 import { mainMap } from "./mainMap";
+import { StationaryEnemy } from "./enemy1"
+import { bullets } from "./bullet";
 
 export class MainScene extends BaseScene{
     constructor() {
@@ -14,25 +16,30 @@ export class MainScene extends BaseScene{
         super.preload();
         this.load.setBaseURL('../../assets');
         mainMap.preload();
-        this.load.image('barrel', 'sprites/barrel.png');
-        for(let prop in mainObjects){
-            mainObjects[prop].preload?.();
-        }
+        mainObjects.preloadAll();
+        StationaryEnemy.preload();
+        bullets.preload();
     }
 
     create(): void {
         super.create();
+        bullets.create();
         mainMap.create();
-        for(let prop in mainObjects){
-            mainObjects[prop].create?.();
-        }
+        mainObjects.createAll();
+        bullets.addOverlap(mainMap.layers.collidable, (bullet)=>{
+            bullet.destroy();
+        })
     }
 
+    bulletTimer = 20;
     update(): void {
         super.update();
         mainMap.update();
-        for(let prop in mainObjects){
-            mainObjects[prop].update?.();
+        mainObjects.updateAll();
+        this.bulletTimer--;
+        if(this.bulletTimer === 0){
+            this.bulletTimer = 60;
+            bullets.makeBullet({x:300, y:200}, {x:0, y:50});
         }
     }
 }
