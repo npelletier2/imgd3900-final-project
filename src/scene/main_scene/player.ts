@@ -20,8 +20,8 @@ export let player : {
 }
 
 function preload(): void {
-    scenes.currentScene?.load.spritesheet('slime', 'sprites/slime.png',{
-        frameWidth: 16, frameHeight: 16
+    scenes.currentScene?.load.spritesheet('slime', 'sprites/player.png',{
+        frameWidth: 32, frameHeight: 32
     });
     scenes.currentScene?.load.spritesheet('attack-diag', 'sprites/swing-diag.png', {
         frameWidth: 48, frameHeight: 48
@@ -38,7 +38,7 @@ function create(): void {
     player.atkCardSprite = (scenes.currentScene?.physics.add.sprite(200, 200, 'atk-card') as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody);
 
     //set player sprite size
-    player.sprite.body.setSize(8,4).setOffset(4,6);
+    player.sprite.body.setSize(11,18).setOffset(11,7);
 
     //collide with collidable layer of map
     scenes.currentScene?.physics.add.collider((player.sprite as Phaser.GameObjects.GameObject), mainMap.layers.collidable);
@@ -50,25 +50,25 @@ function create(): void {
     //set up anims
     scenes.currentScene?.anims.create({
         key: 'down',
-        frames: scenes.currentScene.anims.generateFrameNumbers('slime', {start: 0, end: 3}),
-        frameRate: 10,
-        repeat: -1
-    });
-    scenes.currentScene?.anims.create({
-        key: 'left',
-        frames: scenes.currentScene.anims.generateFrameNumbers('slime', {start: 4, end: 7}),
+        frames: scenes.currentScene.anims.generateFrameNumbers('slime', {start: 1, end: 2}),
         frameRate: 10,
         repeat: -1
     });
     scenes.currentScene?.anims.create({
         key: 'right',
-        frames: scenes.currentScene.anims.generateFrameNumbers('slime', {start: 8, end: 11}),
+        frames: scenes.currentScene.anims.generateFrameNumbers('slime', {start: 4, end: 5}),
+        frameRate: 10,
+        repeat: -1
+    });
+    scenes.currentScene?.anims.create({
+        key: 'left',
+        frames: scenes.currentScene.anims.generateFrameNumbers('slime', {start: 7, end: 8}),
         frameRate: 10,
         repeat: -1
     });
     scenes.currentScene?.anims.create({
         key: 'up',
-        frames: scenes.currentScene.anims.generateFrameNumbers('slime', {start: 12, end: 15}),
+        frames: scenes.currentScene.anims.generateFrameNumbers('slime', {start: 10, end: 11}),
         frameRate: 10,
         repeat: -1
     });
