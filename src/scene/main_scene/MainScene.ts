@@ -3,8 +3,9 @@ import { BaseScene } from "../BaseScene";
 import { scenes } from "../../globals";
 import { mainObjects } from "./mainObjects";
 import { mainMap } from "./mainMap";
-import { StationaryEnemy } from "./enemy"
+import { enemies } from "./enemy"
 import { bullets } from "./bullet";
+import { player } from "./player";
 
 export class MainScene extends BaseScene{
     constructor() {
@@ -16,8 +17,9 @@ export class MainScene extends BaseScene{
         super.preload();
         this.load.setBaseURL('../../assets');
         mainMap.preload();
-        mainObjects.preloadAll();
-        StationaryEnemy.preload();
+        //mainObjects.preloadAll();
+        player.preload();
+        enemies.preload();
         bullets.preload();
     }
 
@@ -25,21 +27,20 @@ export class MainScene extends BaseScene{
         super.create();
         bullets.create();
         mainMap.create();
-        mainObjects.createAll();
-        bullets.addOverlap(mainMap.layers.collidable, (bullet)=>{
+        //mainObjects.createAll();
+        player.create();
+        enemies.create();
+        this.physics.add.collider(bullets.group as Phaser.GameObjects.Group, mainMap.layers.collidable, (bullet)=>{
             bullet.destroy();
         })
+        enemies.makeEnemy(0, new Phaser.Math.Vector2(100,100))
     }
 
-    bulletTimer = 20;
     update(): void {
         super.update();
         mainMap.update();
-        mainObjects.updateAll();
-        this.bulletTimer--;
-        if(this.bulletTimer === 0){
-            this.bulletTimer = 60;
-            bullets.makeBulletXY({x:300, y:200}, {x:0, y:50});
-        }
+        player.update();
+        //mainObjects.updateAll();
+        enemies.updateAll();
     }
 }

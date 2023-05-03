@@ -10,8 +10,6 @@ export interface ObjectGame {
 
 export let objectTypes: Class[] = [];
 
-export let objects:{[index:string]:ObjectGame} = {};
-
 // ---------- Scene Switching ----------
 
 export let scenes:{

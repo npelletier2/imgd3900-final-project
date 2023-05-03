@@ -4,8 +4,8 @@ export let bullets: {
     group?: Phaser.GameObjects.Group,
     create: ()=>void,
     addOverlap: (other:Phaser.GameObjects.GameObject, callback:ArcadePhysicsCallback)=>void,
-    makeBulletXY: (pos:{x:number, y:number}, vel:{x:number, y:number}, damage?:number)=>Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
-    makeBulletRTheta: (pos:{x:number, y:number}, angle:number, speed:number, damage?:number)=>Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
+    makeBulletXY: (pos:Phaser.Math.Vector2, vel:Phaser.Math.Vector2, damage?:number)=>Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
+    makeBulletRTheta: (pos:Phaser.Math.Vector2, angle:number, speed:number, damage?:number)=>Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
     preload: ()=>void;
 } = {
     create, addOverlap, makeBulletXY, makeBulletRTheta, preload
@@ -17,10 +17,10 @@ function create():void{
 
 //callback: (bullet, other)=>void
 function addOverlap(other:Phaser.GameObjects.GameObject, callback:ArcadePhysicsCallback):void{
-    scenes.currentScene?.physics.add.collider(bullets.group as Phaser.GameObjects.Group, other, callback);
+    scenes.currentScene?.physics.add.overlap(bullets.group as Phaser.GameObjects.Group, other, callback);
 }
 
-function makeBulletXY(pos:{x:number, y:number}, vel:{x:number, y:number}, damage:number=10) : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
+function makeBulletXY(pos:Phaser.Math.Vector2, vel:Phaser.Math.Vector2, damage:number=10) : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody {
     let sprite = scenes.currentScene?.physics.add.sprite(pos.x, pos.y, 'bullet') as Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
     sprite.body.setSize(4,4).setOffset(2,2);
     sprite.body.setVelocity(vel.x, vel.y);
@@ -29,10 +29,10 @@ function makeBulletXY(pos:{x:number, y:number}, vel:{x:number, y:number}, damage
     return sprite;
 }
 
-function makeBulletRTheta(pos:{x:number, y:number}, angle:number, speed:number, damage:number=10) : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody{
+function makeBulletRTheta(pos:Phaser.Math.Vector2, angle:number, speed:number, damage:number=10) : Phaser.Types.Physics.Arcade.SpriteWithDynamicBody{
     let vel = new Phaser.Math.Vector2(1,0);
     vel.rotate(angle).scale(speed);
-    return makeBulletXY(pos, {x:vel.x, y:vel.y}, damage);
+    return makeBulletXY(pos, new Phaser.Math.Vector2(vel.x, vel.y), damage);
 }
 
 function preload(){
