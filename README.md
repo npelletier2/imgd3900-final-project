@@ -1,11 +1,7 @@
-# Phaser with Vite
+## Website
 
-Run the following commands at the root of this project:
+[Hosted on GitHub Pages](https://npelletier2.github.io/imgd3900-final-project/)
 
-```
-npm install
-npm run dev
-```
+## Slides
 
-This will launch a dev server at the address printed out, and will automatically
-update as you save your source code files!
+[Google Slides](https://docs.google.com/presentation/d/1dyVWVzF6smNO-O58tYXcDQ4sefkTfvJxMhd3Oi_cFX0/edit?usp=sharing)
