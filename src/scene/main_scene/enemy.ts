@@ -10,9 +10,10 @@ export let enemies : {
     create: ()=>void,
     addOverlap: (other:Phaser.GameObjects.GameObject, callback:ArcadePhysicsCallback)=>void,
     makeEnemy: (id:number, pos:Phaser.Math.Vector2)=>Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
-    updateAll: ()=>void
+    updateAll: ()=>void,
+    resetCanDamage: ()=>void
 } = {
-    preload, create, addOverlap, makeEnemy, updateAll
+    preload, create, addOverlap, makeEnemy, updateAll, resetCanDamage
 }
 
 function findVecToPlayer(enemy:Phaser.Types.Physics.Arcade.SpriteWithDynamicBody): Phaser.Math.Vector2{
@@ -29,6 +30,17 @@ initFunctions[0] = (enemy)=>{
     enemy.setSize(10,15).setOffset(1,0);
     enemy.setData('atkCooldown', 60);
     enemy.setData('atkTimer', 60);
+    enemy.setData('health', 30);
+    enemy.setData('damage', (dmg:number)=>{
+        if(enemy.getData('canReceiveDamage')){
+            enemy.setData('health', enemy.getData('health')-dmg);
+            enemy.setData('canReceiveDamage', false);
+            if(enemy.getData('health') <= 0){
+                enemy.destroy();
+            }
+        }
+    })
+    enemy.setData('canReceiveDamage', true);
 }
 updateFunctions[0] = (enemy)=>{
     enemy.setData('atkTimer', enemy.getData('atkTimer')-1);
@@ -53,7 +65,7 @@ function create(){
 }
 
 function addOverlap(other:Phaser.GameObjects.GameObject, callback:ArcadePhysicsCallback):void{
-    scenes.currentScene?.physics.add.collider(enemies.group as Phaser.GameObjects.Group, other, callback);
+    scenes.currentScene?.physics.add.overlap(enemies.group as Phaser.GameObjects.Group, other, callback);
 }
 
 function makeEnemy(id:number, pos:Phaser.Math.Vector2){
@@ -67,6 +79,10 @@ function makeEnemy(id:number, pos:Phaser.Math.Vector2){
 
 function updateAll(){
     enemies.group?.getChildren().forEach((enemy)=>{enemy.update(enemy)})
+}
+
+function resetCanDamage(){
+    enemies.group?.getChildren().forEach((enemy)=>{enemy.setData('canReceiveDamage', true)})
 }
 
 export class StationaryEnemy implements ObjectGame{

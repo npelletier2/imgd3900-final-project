@@ -1,7 +1,6 @@
 import { controls, scenes } from "./globals";
 import { MainScene } from "./scene/main_scene/MainScene";
 import { BaseScene } from "./scene/BaseScene";
-import { player } from "./scene/main_scene/player";
 import "./style.css";
 import "phaser";
 

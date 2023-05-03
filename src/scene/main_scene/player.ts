@@ -1,9 +1,11 @@
 //import { mainObjects } from "./mainObjects"
 import { controls, scenes } from "../../globals"
 import { bullets } from "./bullet"
+import { enemies } from "./enemy";
 import { mainMap } from "./mainMap"
 
 let health = 100;
+let healthText: Phaser.GameObjects.Text | undefined;
 let baseSpeed = 150;
 export let player : {
     sprite?: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody,
@@ -108,8 +110,25 @@ function create(): void {
     bullets.addOverlap(player.sprite, (bullet)=>{
         let dmg = bullet.getData('damage');
         bullet.destroy();
-        player.damage(dmg)
+        player.damage(dmg);
     })
+    bullets.addOverlap(player.atkCardSprite, (bullet)=>{
+        bullet.destroy();
+    })
+    bullets.addOverlap(player.atkDiagSprite, (bullet)=>{
+        bullet.destroy();
+    })
+
+    //enemy damage
+    enemies.addOverlap(player.atkCardSprite, (enemy)=>{
+        enemy.getData('damage')(10);
+    })
+    enemies.addOverlap(player.atkDiagSprite, (enemy)=>{
+        enemy.getData('damage')(10);
+    })
+
+    //health text
+    healthText = scenes.currentScene?.add.text(20, 20, `Health: ${health}`)
 };
 
 function update(): void {
@@ -152,7 +171,7 @@ function update(): void {
 
 function damage(dmg: number){
     health -= dmg;
-    console.log(health)
+    updateText();
 }
 
 let dashHandler = (function(){
@@ -290,6 +309,8 @@ let attackHandler = (function(){
         }
         attackTimer = attackCooldown;
 
+        enemies.resetCanDamage();
+
         let angle = attackDir.angle() + Math.PI/2;
         if(angle%(Math.PI/2) === 0){
             setCardBox(atkCardSprite, angle);
@@ -331,6 +352,9 @@ let attackHandler = (function(){
     return {tryAttack, updateAttack};
 })();
 
+function updateText(){
+    if(healthText) healthText.text = `Health: ${health}`
+}
 //function setupPlayer(){
 //    mainObjects.player = player;
 //}

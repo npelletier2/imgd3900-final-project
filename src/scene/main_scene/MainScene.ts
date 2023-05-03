@@ -1,7 +1,6 @@
 import "phaser"
 import { BaseScene } from "../BaseScene";
 import { scenes } from "../../globals";
-import { mainObjects } from "./mainObjects";
 import { mainMap } from "./mainMap";
 import { enemies } from "./enemy"
 import { bullets } from "./bullet";
@@ -28,12 +27,17 @@ export class MainScene extends BaseScene{
         bullets.create();
         mainMap.create();
         //mainObjects.createAll();
-        player.create();
         enemies.create();
+        player.create();
+
         this.physics.add.collider(bullets.group as Phaser.GameObjects.Group, mainMap.layers.collidable, (bullet)=>{
             bullet.destroy();
         })
-        enemies.makeEnemy(0, new Phaser.Math.Vector2(100,100))
+
+        enemies.makeEnemy(0, new Phaser.Math.Vector2(100,100));
+        enemies.makeEnemy(0, new Phaser.Math.Vector2(650,40));
+        enemies.makeEnemy(0, new Phaser.Math.Vector2(650,300));
+        enemies.makeEnemy(0, new Phaser.Math.Vector2(200,350));
     }
 
     update(): void {
